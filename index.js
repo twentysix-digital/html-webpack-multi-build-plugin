@@ -1,4 +1,5 @@
 "use strict";
+const path = require('path');
 let js = [];
 let run = 0;
 let outputFileNameRegex = [];
@@ -48,10 +49,10 @@ HtmlWebpackMultiBuildPlugin.prototype = {
     if (run === 2) {
       data.plugin.options.modernScripts = js.filter(
         value => value.indexOf("legacy") === -1
-      );
+      ).map(this.getScriptPath.bind(this));
       data.plugin.options.legacyScripts = js.filter(
         value => value.indexOf("legacy") > 0
-      );
+      ).map(this.getScriptPath.bind(this));
     }
 
     cb(null, data);
@@ -96,6 +97,16 @@ HtmlWebpackMultiBuildPlugin.prototype = {
         }
       });
     });
+  },
+  getScriptPath: function(file) {
+    if (this.options && this.options.srcPath) {
+      return path.join(
+        path.sep,
+        this.options.srcPath,
+        path.basename(file)
+      );
+    }
+    return file;
   }
 };
 
