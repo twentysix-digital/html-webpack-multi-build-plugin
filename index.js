@@ -101,7 +101,7 @@ HtmlWebpackMultiBuildPlugin.prototype = {
   getScriptPath: function(file) {
     if (this.options && this.options.srcPath) {
       return path.join(
-        path.sep,
+        '/',
         this.options.srcPath,
         path.basename(file)
       );
