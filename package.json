@@ -1,6 +1,6 @@
 {
   "name": "@minlare/html-webpack-multi-build-plugin",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "simplifies creation of HTML file for multi-build configuration",
   "main": "index.js",
   "repository": {
