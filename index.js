@@ -1,5 +1,6 @@
 "use strict";
 const path = require('path');
+const slash = require('slash');
 let js = [];
 let run = 0;
 let outputFileNameRegex = [];
@@ -100,11 +101,11 @@ HtmlWebpackMultiBuildPlugin.prototype = {
   },
   getScriptPath: function(file) {
     if (this.options && this.options.srcPath) {
-      return path.join(
-        '/',
+      return slash(path.join(
+        path.sep,
         this.options.srcPath,
         path.basename(file)
-      );
+      ));
     }
     return file;
   }
