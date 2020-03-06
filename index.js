@@ -47,13 +47,13 @@ HtmlWebpackMultiBuildPlugin.prototype = {
     ++run;
     js = js.concat(data.assets.js);
     data.assets.js = js;
-    if (run === 2) {
-      data.plugin.options.modernScripts = js.filter(
+    if (run === 1) {
+      data.plugin.options.modernScripts = [...new Set(js.filter(
         value => value.indexOf("legacy") === -1
-      ).map(this.getScriptPath.bind(this));
-      data.plugin.options.legacyScripts = js.filter(
+      ).map(this.getScriptPath.bind(this)))];
+      data.plugin.options.legacyScripts = [...new Set(js.filter(
         value => value.indexOf("legacy") > 0
-      ).map(this.getScriptPath.bind(this));
+      ).map(this.getScriptPath.bind(this)))];
     }
 
     cb(null, data);
