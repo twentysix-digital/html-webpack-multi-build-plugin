@@ -1,6 +1,6 @@
 {
   "name": "@frontend-twentysixdigital/html-webpack-multi-build-plugin",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "simplifies creation of HTML file for multi-build configuration",
   "main": "index.js",
   "repository": {

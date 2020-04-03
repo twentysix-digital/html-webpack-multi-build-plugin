@@ -1,8 +1,7 @@
-"use strict";
+'use strict';
 const path = require('path');
 const slash = require('slash');
 let js = [];
-let run = 0;
 let outputFileNameRegex = [];
 
 function HtmlWebpackMultiBuildPlugin(options) {
@@ -16,27 +15,27 @@ HtmlWebpackMultiBuildPlugin.prototype = {
     if (compiler.hooks) {
       // webpack 4 support
       compiler.hooks.compilation.tap(
-        "HtmlWebpackMultiBuildPlugin",
+        'HtmlWebpackMultiBuildPlugin',
         compilation => {
           if (compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration) {
             compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tapAsync(
-              "HtmlWebpackMultiBuildPlugin",
+              'HtmlWebpackMultiBuildPlugin',
               this.beforeHtmlGeneration.bind(this)
             );
           } else {
-            var HtmlWebpackPlugin = require("html-webpack-plugin");
+            var HtmlWebpackPlugin = require('html-webpack-plugin');
             var hooks = HtmlWebpackPlugin.getHooks(compilation);
             hooks.beforeAssetTagGeneration.tapAsync(
-              "HtmlWebpackMultiBuildPlugin",
+              'HtmlWebpackMultiBuildPlugin',
               this.beforeHtmlGeneration.bind(this)
             );
           }
         }
       );
     } else {
-      compiler.plugin("compilation", compilation => {
+      compiler.plugin('compilation', compilation => {
         compilation.plugin(
-          "html-webpack-plugin-before-html-generation",
+          'html-webpack-plugin-before-html-generation',
           this.beforeHtmlGeneration.bind(this)
         );
       });
@@ -44,33 +43,40 @@ HtmlWebpackMultiBuildPlugin.prototype = {
   },
   beforeHtmlGeneration: function(data, cb) {
     this.clearOldScripts(data);
-    ++run;
+
     js = js.concat(data.assets.js);
     data.assets.js = js;
-    if (run === 1) {
-      data.plugin.options.modernScripts = [...new Set(js.filter(
-        value => value.indexOf("legacy") === -1
-      ).map(this.getScriptPath.bind(this)))];
-      data.plugin.options.legacyScripts = [...new Set(js.filter(
-        value => value.indexOf("legacy") > 0
-      ).map(this.getScriptPath.bind(this)))];
-    }
+
+    data.plugin.options.modernScripts = [
+      ...new Set(
+        js
+          .filter(value => value.indexOf('legacy') === -1)
+          .map(this.getScriptPath.bind(this))
+      )
+    ];
+    data.plugin.options.legacyScripts = [
+      ...new Set(
+        js
+          .filter(value => value.indexOf('legacy') > 0)
+          .map(this.getScriptPath.bind(this))
+      )
+    ];
 
     cb(null, data);
   },
   createOutputRegexes: function(options) {
     if (options.output && options.output.filename) {
       // default webpack entry
-      let entry = ["main"];
+      let entry = ['main'];
       if (options.entry) {
         // when object is provided we have custom entry names
-        if (typeof options.entry === "object") {
+        if (typeof options.entry === 'object') {
           entry = Object.keys(options.entry);
         }
       }
       entry.forEach(e => {
         const outFilePathForEntry = options.output.filename.replace(
-          "[name]",
+          '[name]',
           e
         );
         const matches = outFilePathForEntry.match(/\[hash(:\d+)?]/);
@@ -101,11 +107,9 @@ HtmlWebpackMultiBuildPlugin.prototype = {
   },
   getScriptPath: function(file) {
     if (this.options && this.options.srcPath) {
-      return slash(path.join(
-        path.sep,
-        this.options.srcPath,
-        path.basename(file)
-      ));
+      return slash(
+        path.join(path.sep, this.options.srcPath, path.basename(file))
+      );
     }
     return file;
   }
